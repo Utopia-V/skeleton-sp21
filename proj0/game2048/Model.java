@@ -5,7 +5,7 @@ import java.util.Observable;
 
 
 /** The state of a game of 2048.
- *  @author TODO: YOUR NAME HERE
+ *  @author Uranox
  */
 public class Model extends Observable {
     /** Current contents of the board. */
@@ -137,7 +137,14 @@ public class Model extends Observable {
      *  Empty spaces are stored as null.
      * */
     public static boolean emptySpaceExists(Board b) {
-        // TODO: Fill in this function.
+        int size = b.size();
+        for (int col = 0; col < size; col++){
+            for (int row = 0; row < size; row++){
+                if (b.tile(col, row) == null){
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -147,7 +154,15 @@ public class Model extends Observable {
      * given a Tile object t, we get its value with t.value().
      */
     public static boolean maxTileExists(Board b) {
-        // TODO: Fill in this function.
+        int size = b.size();
+        for (int col = 0; col < size; col++) {
+            for (int row = 0; row < size; row++) {
+                Tile t = b.tile(col, row);
+                if (t != null && t.value() == MAX_PIECE) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -158,7 +173,34 @@ public class Model extends Observable {
      * 2. There are two adjacent tiles with the same value.
      */
     public static boolean atLeastOneMoveExists(Board b) {
-        // TODO: Fill in this function.
+        int size = b.size();
+        // Check for empty spaces
+        if (emptySpaceExists(b)) {
+            return true;
+        }
+        // Check for adjacent tiles with the same value
+        for (int col = 0; col < size; col++) {
+            for (int row = 0; row < size; row++) {
+                Tile t = b.tile(col, row);
+                if (t != null) {
+                    // Check right neighbor
+                    if (col < size - 1) {
+                        Tile right = b.tile(col + 1, row);
+                        if (right != null && right.value() == t.value()) {
+                            return true;
+                        }
+                    } else {
+                        // Check upper neighbor
+                        if (row < size - 1) {
+                            Tile up = b.tile(col, row + 1);
+                            if (up != null && up.value() == t.value()) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
         return false;
     }
 
