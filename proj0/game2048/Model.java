@@ -110,8 +110,38 @@ public class Model extends Observable {
         boolean changed;
         changed = false;
         board.setViewingPerspective(side);
-        for (int col = 0; col < board.size(); col++)
-        checkGameOver();
+
+        int n = board.size();
+        for (int col = 0; col < board.size(); col++) {
+            int mergeRow = n;
+
+            for (int row = n - 2; row >= 0; row--) {
+                Tile t = board.tile(col, row);
+                if (t == null) {
+                    continue;
+                }
+
+                int target = row;
+                while (target + 1 < n && board.tile(col, target + 1) == null){
+                    target++;
+                }
+
+                if (target + 1 < n) {
+                    Tile up = board.tile(col, target + 1);
+                    if (up != null && up.value() == t.value() && target + 1 < mergeRow) {
+                        target++;
+                        score += t.value() * 2;
+                        mergeRow = target;
+                    }
+                }
+                if (target != row) {
+                    board.move(col, target, t);
+                        changed = true;
+                }
+            }
+        }
+
+        board.setViewingPerspective(Side.NORTH);
         if (changed) {
             setChanged();
         }
